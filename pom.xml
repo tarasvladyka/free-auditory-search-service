@@ -8,10 +8,9 @@
 		<version>2.2.6.RELEASE</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.vladyka.nulp</groupId>
-	<artifactId>free-auditory-search-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>free-auditory-search-service</name>
+    <groupId>com.vladyka.lpnu</groupId>
+    <artifactId>lpnu-service</artifactId>
+    <version>0.1</version>
 
 	<properties>
 		<java.version>11</java.version>
@@ -34,6 +33,13 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
+
+        <dependency>
+            <!-- jsoup HTML parser library @ https://jsoup.org/ -->
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>

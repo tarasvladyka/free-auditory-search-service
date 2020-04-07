@@ -1,10 +1,10 @@
-package com.vladyka.nulp;
+package com.vladyka.lpnu;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FreeAuditorySearchServiceApplicationTests {
+class ApplicationTests {
 
 	@Test
 	void contextLoads() {
