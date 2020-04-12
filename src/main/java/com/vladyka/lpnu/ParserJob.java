@@ -11,8 +11,8 @@ import com.vladyka.lpnu.service.impl.ParseServiceImpl;
 import com.vladyka.lpnu.service.impl.ScheduleEntryServiceImpl;
 import com.vladyka.lpnu.tools.ParseUrlProvider;
 import com.vladyka.lpnu.tools.ScheduleEntryBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -25,7 +25,7 @@ import java.util.List;
 @Component
 public class ParserJob {
 
-    private Logger logger = LoggerFactory.getLogger(getClass().getName());
+    private Logger logger = LogManager.getLogger(getClass().getName());
 
     @Autowired
     private ParseServiceImpl parseService;
@@ -45,20 +45,27 @@ public class ParserJob {
     @Autowired
     private ScheduleEntryServiceImpl scheduleEntryService;
 
+    private static Integer counter = 0;
+
+    private static Integer fails = 0;
+
+    private static Integer total = 0;
+
+
     @EventListener(ContextRefreshedEvent.class)
     public void start() {
-        logger.info("Started parsing");
-        String instAbbr = "ІЕСК";
-        String groupAbbr = "ЕЕ-21";
-        Institute institute = instituteService.create(new Institute().setAbbr(instAbbr));
-        Group group = groupService.create(new Group().setAbbr(groupAbbr).setInstitute(institute));
-        parseSinglePage(institute, group);
-//        try {
-//            parseAndStoreData();
-//        } catch (IOException e) {
-//            logger.error("Error during parsing: ", e);
-//        }
-        logger.info("Finished parsing");
+//        logger.info("Started parsing");
+//        String instAbbr = "ІЕСК";
+//        String groupAbbr = "ЕЕ-21";
+//        Institute institute = instituteService.create(new Institute().setAbbr(instAbbr));
+//        Group group = groupService.create(new Group().setAbbr(groupAbbr).setInstitute(institute));
+//        parseSinglePage(institute, group);
+        try {
+            parseAndStoreData();
+        } catch (IOException e) {
+            logger.error("Error during parsing: ", e);
+        }
+        logger.info("Finished parsing of {} schedules, fails = {}", counter, fails);
     }
 
     private void parseAndStoreData() throws IOException {
@@ -70,6 +77,7 @@ public class ParserJob {
             List<String> instituteGroups = parseService.parseGroups(institute);
             groupService.createAllInInstitute(instituteGroups, institute);
             logger.info("Parsed and stored info for {} groups in institute {}", instituteGroups.size(), institute);
+            total += instituteGroups.size();
         }
         parseSchedulePages();
     }
@@ -88,24 +96,33 @@ public class ParserJob {
         String groupAbbr = group.getAbbr();
         String urlToParse = urlProvider.getGroupScheduleUrl(instAbbr, groupAbbr);
         try {
+            Long startTime = System.currentTimeMillis();
             List<ParsedScheduleEntry> parsedData = parseService.parseGroupSchedule(instAbbr, groupAbbr);
             List<ScheduleEntry> entries = new LinkedList<>();
             parsedData.forEach(parsed -> entries.addAll(scheduleEntryBuilder.buildFrom(parsed, group)));
             scheduleEntryService.createAll(entries);
-            logger.info("Parsed and stored schedule for institute {}, group {}, url = {}",
+            Long endTime = System.currentTimeMillis();
+            double parseSpeed = (endTime - startTime) / 1000.0;
+            logger.info("[{}%] [{}/{}] [remaining ~ {} хв] Parsed and stored schedule for institute {}, group {}, url = {}",
+                    String.format("%.1f", counter / (double) total * 100),
+                    counter,
+                    total,
+                    String.format("%.1f", (total - counter) * parseSpeed / 60),
                     instAbbr,
                     groupAbbr,
                     urlToParse);
+            counter++;
         } catch (SchedulePageParseException | IllegalArgumentException e) {
             logger.error(String.format(
                     "Exception occurred during parsing schedule:\n" +
                             "%s\n\n" +
-                            "Exception: %s\n" +
-                            "Consider testing this string and regex at https://regex101.com/\n",
+                            "Exception: %s\n",
                     urlToParse,
                     e.getMessage()));
+            fails++;
         } catch (Exception e) {
             logger.error("Unexpected exception occurred during parsing schedule at url: " + urlToParse, e);
+            fails++;
         }
     }
 }
