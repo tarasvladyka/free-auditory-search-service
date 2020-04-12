@@ -13,7 +13,7 @@ public class Auditory {
     private Long id;
 
     @Column(nullable = false)
-    private String number;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "campus_id")
@@ -32,12 +32,12 @@ public class Auditory {
         return this;
     }
 
-    public String getNumber() {
-        return number;
+    public String getName() {
+        return name;
     }
 
-    public Auditory setNumber(String number) {
-        this.number = number;
+    public Auditory setName(String name) {
+        this.name = name;
         return this;
     }
 

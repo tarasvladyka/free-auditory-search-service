@@ -24,7 +24,7 @@ create table campus(
 create table auditory(
 	id              bigserial,
 	campus_id       bigint                          not null,
-	"number"        varchar                         not null,
+	"name"          varchar                         not null,
 	created_on      timestamp without time zone     not null,
 	primary key(id),
 	foreign key(campus_id) references campus(id)
@@ -39,6 +39,8 @@ create table schedule_entry(
 	"day"           character varying               not null,
 	class_number    int                             not null,
 	class_type      character varying               not null,
+	description     character varying,
+	teacher         character varying,
 	created_on      timestamp without time zone     not null,
 	primary key (id),
 	foreign key(group_id) references groups(id),

@@ -37,7 +37,7 @@ public class ScheduleEntry {
 
     @Enumerated(STRING)
     @Column(nullable = false)
-    private DayOfWeek dayOfWeek;
+    private DayOfWeek day;
 
     @Column(nullable = false)
     private Integer classNumber;
@@ -45,6 +45,10 @@ public class ScheduleEntry {
     @Enumerated(STRING)
     @Column(nullable = false)
     private ClassType classType;
+
+    private String description;
+
+    private String teacher;
 
     @Column(nullable = false)
     private LocalDateTime createdOn;
@@ -94,12 +98,12 @@ public class ScheduleEntry {
         return this;
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
+    public DayOfWeek getDay() {
+        return day;
     }
 
-    public ScheduleEntry setDayOfWeek(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
+    public ScheduleEntry setDay(DayOfWeek day) {
+        this.day = day;
         return this;
     }
 
@@ -118,6 +122,24 @@ public class ScheduleEntry {
 
     public ScheduleEntry setClassType(ClassType classType) {
         this.classType = classType;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public ScheduleEntry setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public ScheduleEntry setTeacher(String teacher) {
+        this.teacher = teacher;
         return this;
     }
 

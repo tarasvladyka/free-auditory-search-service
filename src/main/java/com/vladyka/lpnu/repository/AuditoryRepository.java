@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AuditoryRepository extends JpaRepository<Auditory, Long> {
 
+    Auditory getByNameAndCampusId(String auditoryName, Long campusId);
 }

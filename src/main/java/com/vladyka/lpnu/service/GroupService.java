@@ -1,12 +1,13 @@
 package com.vladyka.lpnu.service;
 
 import com.vladyka.lpnu.model.Group;
-import com.vladyka.lpnu.model.Institute;
 
 import java.util.List;
 
 public interface GroupService {
-    Group createInInstitute(Group group, Institute institute);
+    List<Group> createAllInInstitute(List<String> groups, String institute);
+
+    Group create(Group group);
 
     List<Group> findAllByInstitute(Long instituteId);
 }
