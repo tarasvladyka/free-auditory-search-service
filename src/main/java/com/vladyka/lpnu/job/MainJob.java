@@ -1,4 +1,4 @@
-package com.vladyka.lpnu;
+package com.vladyka.lpnu.job;
 
 import com.vladyka.lpnu.crawl.InstitutesCrawler;
 import com.vladyka.lpnu.crawl.StudentGroupsCrawler;
