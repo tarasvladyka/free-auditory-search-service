@@ -10,4 +10,8 @@ public interface GroupService {
     Group create(Group group);
 
     List<Group> findAllByInstitute(Long instituteId);
+
+    Integer findTotalCount();
+
+    Group findByAbbrAndInstituteAbbr(String groupAbbr, String instAbbr);
 }

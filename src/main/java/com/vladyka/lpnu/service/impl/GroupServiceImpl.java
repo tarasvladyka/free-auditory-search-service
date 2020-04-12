@@ -46,4 +46,15 @@ public class GroupServiceImpl implements GroupService {
     public List<Group> findAllByInstitute(Long instituteId) {
         return repository.findAllByInstituteId(instituteId);
     }
+
+    @Override
+    public Integer findTotalCount() {
+        return repository.findTotalCount();
+    }
+
+    @Override
+    public Group findByAbbrAndInstituteAbbr(String groupAbbr, String instAbbr) {
+        Institute institute = instituteService.getByAbbr(instAbbr);
+        return repository.findByAbbrAndInstituteId(groupAbbr, institute.getId());
+    }
 }
