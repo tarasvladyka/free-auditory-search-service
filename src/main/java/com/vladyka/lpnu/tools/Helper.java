@@ -5,9 +5,14 @@ import com.vladyka.lpnu.model.enums.ClassType;
 import com.vladyka.lpnu.model.enums.GroupPart;
 import com.vladyka.lpnu.model.enums.Occurrence;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -15,7 +20,9 @@ import java.util.regex.Pattern;
 import static org.apache.commons.lang3.StringUtils.trim;
 
 @Component
-public class ParseHelper {
+public class Helper {
+
+    private Logger logger = LogManager.getLogger(getClass().getName());
 
     /**
      * Test your regex here: regex101.com
@@ -36,7 +43,7 @@ public class ParseHelper {
         } else if (src.endsWith("znam")) {
             return Occurrence.ZNAM;
         }
-        throw new IllegalArgumentException("Can not extract occurrence out of string: " + src);
+        throw new IllegalArgumentException("Can not create Occurrence from string: " + src);
     }
 
     DayOfWeek convertToDayOfWeek(String src) {
@@ -56,7 +63,15 @@ public class ParseHelper {
             case "НД":
                 return DayOfWeek.SUNDAY;
         }
-        throw new IllegalArgumentException("Can not create day of week from string: " + src);
+        throw new IllegalArgumentException("Can not create DayOfWeek from string: " + src);
+    }
+
+    LocalDate convertToDate(String src) {
+        try {
+            return LocalDate.parse(src, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Can not create LocalDate from string: " + src);
+        }
     }
 
     GroupPart convertToGroupPart(String paraInfo) {
@@ -67,13 +82,13 @@ public class ParseHelper {
         } else if (paraInfo.startsWith("group")) {
             return GroupPart.FULL_GROUP;
         }
-        throw new IllegalArgumentException("Could not extract group part out of string: " + paraInfo);
+        throw new IllegalArgumentException("Could not create GroupPart from string: " + paraInfo);
     }
 
 
     ClassType convertToClassType(String classType) {
         if (StringUtils.isEmpty(classType)) {
-            throw new IllegalArgumentException("Could not extract class type out of empty string");
+            throw new IllegalArgumentException("Could not create ClassType from empty string");
         }
         classType = classType.toUpperCase();
 
@@ -83,7 +98,12 @@ public class ParseHelper {
             return ClassType.PRAC;
         } else if (classType.contains("ЛАБ")) {
             return ClassType.LAB;
-        } else {
+        } else if (classType.contains("КОНСУЛЬТ")) {
+            return ClassType.CONSULTATION;
+        } else if (classType.contains("ЕКЗ")) {
+            return ClassType.EXAM;
+        }
+        {
             return ClassType.UNDEFINED;
         }
     }
@@ -108,5 +128,18 @@ public class ParseHelper {
         parsed.setLocation(trim(parsed.getLocation()));
         parsed.setOccurrence(trim(parsed.getOccurrence()));
         parsed.setTeacher(trim(parsed.getTeacher()));
+    }
+
+    public void printProgressLogs(String groupAbbr, String instAbbr, Long startTime, Long endTime, int counter, int total, String parseUrl) {
+        double parseSpeed = (endTime - startTime) / 1000.0;
+        double remainingTimeMin = (total - counter) * parseSpeed / 60;
+        logger.info("[{}%] [{}/{}] [remaining ~ {} хв]: parsed and stored schedule for institute {}, group {}, url = {}",
+                String.format("%.1f", counter / (double) total * 100),
+                counter,
+                total,
+                String.format("%.1f", remainingTimeMin),
+                instAbbr,
+                groupAbbr,
+                parseUrl);
     }
 }

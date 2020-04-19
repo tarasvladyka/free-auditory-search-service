@@ -9,7 +9,7 @@ public interface InstituteService {
 
     Institute getByAbbr(String abbr);
 
-    List<Institute> createAll(List<String> abbrs);
+    Institute createIfNotExists(String instAbbr);
 
     List<Institute> findAll();
 }

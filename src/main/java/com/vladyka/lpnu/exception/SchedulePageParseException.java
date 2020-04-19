@@ -2,15 +2,18 @@ package com.vladyka.lpnu.exception;
 
 public class SchedulePageParseException extends RuntimeException {
 
-    public SchedulePageParseException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    private String url;
 
-    public SchedulePageParseException() {
-        super();
+    public SchedulePageParseException(String url, String message) {
+        super(message);
+        this.url = url;
     }
 
     public SchedulePageParseException(String message) {
         super(message);
+    }
+
+    public String getUrl() {
+        return url;
     }
 }

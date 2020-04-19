@@ -3,27 +3,46 @@ package com.vladyka.lpnu.tools;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * FT - full-time schedule(очна форма)
+ * PT - part-time schedule(заочна форма)
+ */
 @Component
 public class ParseUrlProvider {
 
-    @Value("${schedule-page.base-url}")
-    private String url;
+    @Value("${schedule-page.student.full-time}")
+    private String baseUrlFT;
 
-    @Value("${schedule-page.institute-url}")
-    private String groupsUrl;
+    @Value("${schedule-page.student.part-time}")
+    private String baseUrlPT;
 
-    @Value("${schedule-page.group-schedule-url}")
-    private String groupScheduleUrl;
-
-    public String getBaseUrl() {
-        return url;
+    // start part-time urls
+    public String getBaseUrlPT() {
+        return baseUrlPT;
     }
 
-    public String getGroupsUrl(String instAbbr) {
-        return String.format(groupsUrl, instAbbr);
+    public String getGroupsUrlPT(String instAbbr) {
+        return String.format(baseUrlPT + "?institutecode_selective=%s", instAbbr);
     }
 
-    public String getGroupScheduleUrl(String instAbbr, String groupAbbr) {
-        return String.format(groupScheduleUrl, instAbbr, groupAbbr);
+    public String getGroupScheduleUrlPT(String instAbbr, String groupAbbr) {
+        return String.format(baseUrlPT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
     }
+    // end part-time urls
+
+    // start full-time urls
+    public String getBaseUrlFT() {
+        return baseUrlFT;
+    }
+
+    public String getGroupsUrlFT(String instAbbr) {
+        return String.format(baseUrlFT + "?institutecode_selective=%s", instAbbr);
+    }
+
+    public String getGroupScheduleUrlFT(String instAbbr, String groupAbbr) {
+        return String.format(baseUrlFT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
+    }
+    // end full-time urls
+
+
 }

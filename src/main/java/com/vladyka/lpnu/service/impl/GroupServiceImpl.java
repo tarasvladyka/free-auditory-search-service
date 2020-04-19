@@ -2,10 +2,12 @@ package com.vladyka.lpnu.service.impl;
 
 import com.vladyka.lpnu.model.Group;
 import com.vladyka.lpnu.model.Institute;
+import com.vladyka.lpnu.model.enums.GroupType;
+import com.vladyka.lpnu.model.enums.StudyForm;
 import com.vladyka.lpnu.repository.GroupRepository;
 import com.vladyka.lpnu.service.GroupService;
 import com.vladyka.lpnu.service.InstituteService;
-import com.vladyka.lpnu.tools.ParseHelper;
+import com.vladyka.lpnu.tools.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,39 +24,39 @@ public class GroupServiceImpl implements GroupService {
     private InstituteService instituteService;
 
     @Autowired
-    private ParseHelper parseHelper;
+    private Helper helper;
 
     @Override
-    public List<Group> createAllInInstitute(List<String> abbrs, String instituteAbbr) {
+    public List<Group> createAll(List<String> abbrs, String instituteAbbr, GroupType groupType,
+                                 StudyForm studyForm) {
         Institute institute = instituteService.getByAbbr(instituteAbbr);
 
-        List<String> cleanAbbrs = parseHelper.trimAll(abbrs);
+        List<String> cleanAbbrs = helper.trimAll(abbrs);
         List<Group> groups = cleanAbbrs.stream()
                 .map(abbr -> new Group()
                         .setAbbr(abbr)
-                        .setInstitute(institute))
+                        .setInstitute(institute)
+                        .setGroupType(groupType)
+                        .setStudyForm(studyForm))
+                .filter(
+                        group -> find(group.getAbbr(), instituteAbbr, studyForm, groupType) == null)
                 .collect(Collectors.toList());
         return repository.saveAll(groups);
     }
 
     @Override
-    public Group create(Group group) {
-        return repository.save(group);
+    public List<Group> findAll(Long instituteId, GroupType groupType, StudyForm studyForm) {
+        return repository.findAllByInstituteIdAndGroupTypeAndStudyForm(instituteId, groupType, studyForm);
     }
 
     @Override
-    public List<Group> findAllByInstitute(Long instituteId) {
-        return repository.findAllByInstituteId(instituteId);
+    public Integer findCount(GroupType groupType, StudyForm studyForm) {
+        return repository.findCount(groupType, studyForm);
     }
 
     @Override
-    public Integer findTotalCount() {
-        return repository.findTotalCount();
-    }
-
-    @Override
-    public Group findByAbbrAndInstituteAbbr(String groupAbbr, String instAbbr) {
+    public Group find(String groupAbbr, String instAbbr, StudyForm studyForm, GroupType groupType) {
         Institute institute = instituteService.getByAbbr(instAbbr);
-        return repository.findByAbbrAndInstituteId(groupAbbr, institute.getId());
+        return repository.findByAbbrAndInstituteIdAndStudyFormAndGroupType(groupAbbr, institute.getId(), studyForm, groupType);
     }
 }

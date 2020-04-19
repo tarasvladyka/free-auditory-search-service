@@ -6,20 +6,22 @@ import com.vladyka.lpnu.exception.SchedulePageParseException;
 import com.vladyka.lpnu.service.AuditoryServiceImpl;
 import com.vladyka.lpnu.service.CampusService;
 import com.vladyka.lpnu.service.ParseService;
-import com.vladyka.lpnu.tools.ParseHelper;
+import com.vladyka.lpnu.tools.Helper;
 import com.vladyka.lpnu.tools.ParseUrlProvider;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.vladyka.lpnu.tools.ParseHelper.PARA_DETAILS_PATTERN;
+import static com.vladyka.lpnu.tools.Helper.PARA_DETAILS_PATTERN;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Service
 public class ParseServiceImpl implements ParseService {
@@ -34,53 +36,72 @@ public class ParseServiceImpl implements ParseService {
     private AuditoryServiceImpl auditoryService;
 
     @Autowired
-    private ParseHelper parseHelper;
+    private Helper helper;
 
     @Autowired
     private CampusService campusService;
 
     @Override
-    public List<String> parseInstitutes() throws IOException {
+    public List<String> parseInstitutes(String url) {
         List<String> result = new LinkedList<>();
-        Elements instituteEntries = Jsoup.connect(urlProvider.getBaseUrl()).get()
-                .select(INSTITUTES_SELECTOR);
+        Elements instituteEntries;
+        try {
+            instituteEntries = Jsoup.connect(url).get()
+                    .select(INSTITUTES_SELECTOR);
+        } catch (IOException e) {
+            throw new SchedulePageParseException(url, "Can not connect to url, exception: " + e.getMessage());
+        }
+        if (isEmpty(instituteEntries)) {
+            throw new SchedulePageParseException(url, "Could not find any entries in Institutes dropdown");
+        }
         instituteEntries.remove(0); //removing first option - ALL
-
         instituteEntries.forEach(option ->
                 result.add(option.attr("value")));
-
         return result;
     }
 
     @Override
-    public List<String> parseGroups(String instituteAbbr) throws IOException {
+    public List<String> parseGroups(String url) {
         List<String> result = new LinkedList<>();
-        Elements options = Jsoup.connect(urlProvider.getGroupsUrl(instituteAbbr)).get()
-                .select(GROUPS_SELECTOR);
+        Elements options;
+        try {
+            options = Jsoup.connect(url).get().select(GROUPS_SELECTOR);
+        } catch (IOException e) {
+            throw new SchedulePageParseException(url, "Can not connect to url, exception: " + e.getMessage());
+        }
+        if (isEmpty(options)) {
+            throw new SchedulePageParseException(url, "Could not find any entries in Groups dropdown");
+        }
         options.remove(0); //removing first option - ALL
         options.forEach(element -> result.add(element.attr("value")));
         return result;
     }
 
     @Override
-    public List<ParsedScheduleEntry> parseGroupSchedule(String instituteAbbr, String groupAbbr) throws IOException {
+    public List<ParsedScheduleEntry> parseGroupSchedule(String url) {
         List<ParsedScheduleEntry> result = new LinkedList<>();
-        for (Element dayElement : getDayElements(instituteAbbr, groupAbbr)) {
+        Element scheduleTable;
+        try {
+            scheduleTable = getScheduleTable(url);
+        } catch (IOException e) {
+            throw new SchedulePageParseException(url, "Can not connect to url, exception: " + e.getMessage());
+        }
+        if (scheduleTable == null || CollectionUtils.isEmpty(scheduleTable.children())) {
+            throw new SchedulePageParseException(url, "Could not find schedule table at the page");
+        }
+        for (Element dayElement : scheduleTable.children()) {
             ScheduleContext context = new ScheduleContext()
-                    .setDay(dayElement.select(".view-grouping-header").text())
-                    .setGroupAbbr(groupAbbr)
-                    .setInstAbbr(instituteAbbr);
+                    .setDay(dayElement.select(".view-grouping-header").text());
             processDayElement(result, context, dayElement);
         }
         return result;
     }
 
-    private Elements getDayElements(String instAbbr, String groupAbbr) throws IOException {
-        return Jsoup.connect(urlProvider.getGroupScheduleUrl(instAbbr, groupAbbr))
+    private Element getScheduleTable(String url) throws IOException {
+        return Jsoup.connect(url)
                 .get()
                 .select(".view-content")
-                .first()
-                .children();
+                .first();
     }
 
     private void processDayElement(List<ParsedScheduleEntry> result, ScheduleContext context, Element dayElement) {
@@ -128,7 +149,7 @@ public class ParseServiceImpl implements ParseService {
             throw new SchedulePageParseException(
                     String.format(
                             "Can not match para details:\n" +
-                                    "[%s]\n" +
+                                    "%s\n" +
                                     "to pattern:\n" +
                                     "%s", details, PARA_DETAILS_PATTERN.pattern()));
         }

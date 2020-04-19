@@ -4,5 +4,7 @@ public enum ClassType {
     LAB,
     PRAC,
     LEC,
+    CONSULTATION,
+    EXAM,
     UNDEFINED
 }

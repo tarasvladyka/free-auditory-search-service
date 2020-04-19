@@ -1,39 +1,62 @@
 package com.vladyka.lpnu.job;
 
-import com.vladyka.lpnu.crawl.InstitutesCrawler;
-import com.vladyka.lpnu.crawl.StudentGroupsCrawler;
-import com.vladyka.lpnu.crawl.StudentScheduleCrawler;
+import com.vladyka.lpnu.crawl.student.fulltime.StudentScheduleCrawlerFT;
+import com.vladyka.lpnu.crawl.student.parttime.StudentScheduleCrawlerPT;
+import com.vladyka.lpnu.exception.SchedulePageParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(name = "mode", havingValue = "CRAWL_ALL")
 public class MainJob {
 
     private Logger logger = LogManager.getLogger(getClass().getName());
 
     @Autowired
-    private StudentScheduleCrawler studentScheduleCrawler;
+    private StudentScheduleCrawlerFT crawlerFT;
     @Autowired
-    private InstitutesCrawler institutesCrawler;
-    @Autowired
-    private StudentGroupsCrawler groupsCrawler;
+    private StudentScheduleCrawlerPT crawlerPT;
+
+    @Value("${parse.student.schedule.full-time.enabled}")
+    private Boolean parseStudentSchedulFullTimeEnabled;
+
+    @Value("${parse.student.schedule.part-time.enabled}")
+    private Boolean parseStudentSchedulPartTimeEnabled;
+
+    @Value("${mode}")
+    private String parseMode;
+
 
     @EventListener(ContextRefreshedEvent.class)
     public void start() {
-        logger.info("::::::::Started crawling in CRAWL_ALL mode");
+        boolean failed = false;
+        logger.info("[MainJob] Started crawling in {} mode", parseMode);
         try {
-            institutesCrawler.crawl();
-            groupsCrawler.crawl();
-            studentScheduleCrawler.crawl();
+            if (parseStudentSchedulFullTimeEnabled) {
+                crawlerFT.crawl();
+            }
+            if (parseStudentSchedulPartTimeEnabled) {
+                crawlerPT.crawl();
+            }
+        } catch (SchedulePageParseException e) {
+            logger.error(String.format(
+                    "[MainJob] Exception occurred during parsing page at url:\n\n" +
+                            "%s\n\n" +
+                            "%s\n",
+                    e.getUrl(),
+                    e.getMessage()));
+            failed = true;
         } catch (Exception e) {
-            logger.error("Error during parsing: ", e);
+            logger.error("[MainJob] Parsing failed. Unexpected exception occurred:", e);
+            failed = true;
         }
-        logger.info("::::::::Finished crawling in CRAWL_ALL mode");
+        if (failed) {
+            System.exit(0);
+        }
+        logger.info("[MainJob] Successfully finished crawling in {} mode", parseMode);
     }
 }

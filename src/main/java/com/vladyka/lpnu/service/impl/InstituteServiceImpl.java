@@ -3,12 +3,11 @@ package com.vladyka.lpnu.service.impl;
 import com.vladyka.lpnu.model.Institute;
 import com.vladyka.lpnu.repository.InstituteRepository;
 import com.vladyka.lpnu.service.InstituteService;
-import com.vladyka.lpnu.tools.ParseHelper;
+import com.vladyka.lpnu.tools.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class InstituteServiceImpl implements InstituteService {
@@ -17,7 +16,7 @@ public class InstituteServiceImpl implements InstituteService {
     private InstituteRepository repository;
 
     @Autowired
-    private ParseHelper parseHelper;
+    private Helper helper;
 
     @Override
     public Institute getByAbbr(String abbr) {
@@ -30,12 +29,12 @@ public class InstituteServiceImpl implements InstituteService {
     }
 
     @Override
-    public List<Institute> createAll(List<String> abbrs) {
-        List<String> cleanAbbrs = parseHelper.trimAll(abbrs);
-        List<Institute> institutes = cleanAbbrs.stream()
-                .map(abbr -> new Institute().setAbbr(abbr))
-                .collect(Collectors.toList());
-        return repository.saveAll(institutes);
+    public Institute createIfNotExists(String instAbbr) {
+        Institute institute = getByAbbr(instAbbr);
+        if (getByAbbr(instAbbr) == null) {
+            institute = create(new Institute().setAbbr(instAbbr));
+        }
+        return institute;
     }
 
     @Override

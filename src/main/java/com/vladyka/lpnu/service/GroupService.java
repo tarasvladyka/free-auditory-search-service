@@ -1,17 +1,18 @@
 package com.vladyka.lpnu.service;
 
 import com.vladyka.lpnu.model.Group;
+import com.vladyka.lpnu.model.enums.GroupType;
+import com.vladyka.lpnu.model.enums.StudyForm;
 
 import java.util.List;
 
 public interface GroupService {
-    List<Group> createAllInInstitute(List<String> groups, String institute);
+    List<Group> createAll(List<String> abbrs, String instituteAbbr, GroupType groupType,
+                          StudyForm studyForm);
 
-    Group create(Group group);
+    List<Group> findAll(Long instituteId, GroupType groupType, StudyForm studyForm);
 
-    List<Group> findAllByInstitute(Long instituteId);
+    Integer findCount(GroupType groupType, StudyForm studyForm);
 
-    Integer findTotalCount();
-
-    Group findByAbbrAndInstituteAbbr(String groupAbbr, String instAbbr);
+    Group find(String groupAbbr, String instAbbr, StudyForm studyForm, GroupType groupType);
 }

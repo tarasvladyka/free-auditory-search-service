@@ -1,7 +1,12 @@
 package com.vladyka.lpnu.model;
 
+import com.vladyka.lpnu.model.enums.GroupType;
+import com.vladyka.lpnu.model.enums.StudyForm;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static javax.persistence.EnumType.STRING;
 
 @Entity
 @Table(name = "groups")
@@ -18,6 +23,14 @@ public class Group {
     @ManyToOne
     @JoinColumn(name = "institute_id")
     private Institute institute;
+
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private GroupType groupType;
+
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private StudyForm studyForm;
 
     @Column(nullable = false)
     private LocalDateTime createdOn;
@@ -46,6 +59,24 @@ public class Group {
 
     public Group setInstitute(Institute institute) {
         this.institute = institute;
+        return this;
+    }
+
+    public GroupType getGroupType() {
+        return groupType;
+    }
+
+    public Group setGroupType(GroupType groupType) {
+        this.groupType = groupType;
+        return this;
+    }
+
+    public StudyForm getStudyForm() {
+        return studyForm;
+    }
+
+    public Group setStudyForm(StudyForm studyForm) {
+        this.studyForm = studyForm;
         return this;
     }
 
