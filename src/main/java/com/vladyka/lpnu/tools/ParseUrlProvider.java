@@ -19,40 +19,57 @@ public class ParseUrlProvider {
     @Value("${schedule-page.selective}")
     private String baseUrlSelective;
 
-    // start part-time urls
-    public String getStudentScheduleBaseUrlPT() {
+    @Value("${schedule-page.post-graduate.full-time}")
+    private String baseUrlPostGraduateFT;
+
+    @Value("${schedule-page.post-graduate.part-time}")
+    private String baseUrlPostGraduatePT;
+
+    public String getStudentBaseUrlPT() {
         return baseUrlPT;
     }
 
-    public String getStudentScheduleGroupsUrlPT(String instAbbr) {
+    public String getStudentGroupsUrlPT(String instAbbr) {
         return String.format(baseUrlPT + "?institutecode_selective=%s", instAbbr);
     }
 
-    public String getStudentScheduleGroupScheduleUrlPT(String instAbbr, String groupAbbr) {
+    public String getStudentGroupScheduleUrlPT(String instAbbr, String groupAbbr) {
         return String.format(baseUrlPT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
     }
-    // end part-time urls
 
-    // start full-time urls
-    public String getStudentScheduleBaseUrlFT() {
+    public String getStudentBaseUrlFT() {
         return baseUrlFT;
     }
 
-    public String getStudentScheduleGroupsUrlFT(String instAbbr) {
+    public String getStudentGroupsUrlFT(String instAbbr) {
         return String.format(baseUrlFT + "?institutecode_selective=%s", instAbbr);
     }
 
-    public String getStudentScheduleGroupScheduleUrlFT(String instAbbr, String groupAbbr) {
+    public String getStudentGroupScheduleUrlFT(String instAbbr, String groupAbbr) {
         return String.format(baseUrlFT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
     }
-    // end full-time urls
-
 
     public String getSelectiveScheduleBaseUrl() {
         return baseUrlSelective;
     }
 
-    public String getSelectiveScheduleGroupScheduleUrl(String groupAbbr) {
+    public String getSelectiveGroupScheduleUrl(String groupAbbr) {
         return String.format(baseUrlSelective + "?edugrupabr_selective=%s", groupAbbr);
+    }
+
+    public String getPostGraduateBaseUrlFT() {
+        return baseUrlPostGraduateFT;
+    }
+
+    public String getPostGraduateGroupScheduleUrlFT(String groupAbbr) {
+        return String.format(baseUrlPostGraduateFT + "?edugrupabr_selective=%s", groupAbbr);
+    }
+
+    public String getPostGraduateBaseUrlPT() {
+        return baseUrlPostGraduatePT;
+    }
+
+    public String getPostGraduateGroupScheduleUrlPT(String groupAbbr) {
+        return String.format(baseUrlPostGraduatePT + "?edugrupabr_selective=%s", groupAbbr);
     }
 }

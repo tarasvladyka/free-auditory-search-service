@@ -43,7 +43,7 @@ public class StudentScheduleGroupsCrawlerFT implements ScheduleCrawler {
         logger.info("[Student schedule, Full-time] - Started crawling group dropDowns for institutes");
         for (Institute institute : instituteService.findAll()) {
             String instAbbr = institute.getAbbr();
-            List<String> instituteGroups = parseService.parseGroups(parseUrlProvider.getStudentScheduleGroupsUrlFT(instAbbr));
+            List<String> instituteGroups = parseService.parseGroups(parseUrlProvider.getStudentGroupsUrlFT(instAbbr));
             groupService.createAllInInstitute(instituteGroups, instAbbr, STUDENT_GROUP, FULL_TIME);
             totalGroups += instituteGroups.size();
             logger.info("[Student schedule, Full-time] - Parsed and stored {} groups in institute {}", instituteGroups.size(), instAbbr);

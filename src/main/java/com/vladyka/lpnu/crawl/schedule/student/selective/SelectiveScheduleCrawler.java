@@ -66,7 +66,7 @@ public class SelectiveScheduleCrawler implements ScheduleCrawler {
     private void crawlSinglePage(String groupAbbr, int total, int counter) {
         Long startTime = System.currentTimeMillis();
         Group targetGroup = groupService.find(groupAbbr, FULL_TIME, SELECTIVE_DISCIPLINES_GROUP);
-        String urlToParse = urlProvider.getSelectiveScheduleGroupScheduleUrl(groupAbbr);
+        String urlToParse = urlProvider.getSelectiveGroupScheduleUrl(groupAbbr);
         try {
             List<ParsedScheduleEntry> parsedEntries = parseService.parseGroupSchedule(urlToParse);
             List<ScheduleEntry> resultEntries = new LinkedList<>();

@@ -80,7 +80,7 @@ public class StudentScheduleCrawlerFT implements ScheduleCrawler {
     private void crawlSinglePage(String instAbbr, String groupAbbr, int total, int counter) {
         Long startTime = System.currentTimeMillis();
         Group targetGroup = groupService.find(groupAbbr, instAbbr, FULL_TIME, STUDENT_GROUP);
-        String urlToParse = urlProvider.getStudentScheduleGroupScheduleUrlFT(instAbbr, groupAbbr);
+        String urlToParse = urlProvider.getStudentGroupScheduleUrlFT(instAbbr, groupAbbr);
         try {
             List<ParsedScheduleEntry> parsedEntries = parseService.parseGroupSchedule(urlToParse);
             List<ScheduleEntry> resultEntries = new LinkedList<>();

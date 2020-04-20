@@ -28,7 +28,7 @@ public class StudentScheduleInstitutesCrawlerFT implements ScheduleCrawler {
     @Override
     public void crawl() {
         logger.info("[Student schedule, Full-time] - Started crawling institutes dropDown");
-        List<String> institutes = parseService.parseInstitutes(urlProvider.getStudentScheduleBaseUrlFT());
+        List<String> institutes = parseService.parseInstitutes(urlProvider.getStudentBaseUrlFT());
         institutes.forEach(instituteService::createIfNotExists);
         logger.info("[Student schedule, Full-time] - Finished crawling institutes dropDown, total {} institutes", institutes.size());
     }

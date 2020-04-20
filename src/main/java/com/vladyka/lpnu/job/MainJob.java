@@ -1,5 +1,7 @@
 package com.vladyka.lpnu.job;
 
+import com.vladyka.lpnu.crawl.schedule.postgraduate.fulltime.PostGraduateScheduleCrawlerFT;
+import com.vladyka.lpnu.crawl.schedule.postgraduate.parttime.PostGraduateScheduleCrawlerPT;
 import com.vladyka.lpnu.crawl.schedule.student.fulltime.StudentScheduleCrawlerFT;
 import com.vladyka.lpnu.crawl.schedule.student.parttime.StudentScheduleCrawlerPT;
 import com.vladyka.lpnu.crawl.schedule.student.selective.SelectiveScheduleCrawler;
@@ -23,6 +25,10 @@ public class MainJob {
     private StudentScheduleCrawlerPT crawlerPT;
     @Autowired
     private SelectiveScheduleCrawler selectiveScheduleCrawler;
+    @Autowired
+    private PostGraduateScheduleCrawlerFT postGraduateScheduleCrawlerFT;
+    @Autowired
+    private PostGraduateScheduleCrawlerPT postGraduateScheduleCrawlerPT;
 
     @Value("${parse.student.schedule.full-time.enabled}")
     private Boolean parseStudentScheduleFullTimeEnabled;
@@ -32,6 +38,12 @@ public class MainJob {
 
     @Value("${parse.selective.schedule.enabled}")
     private Boolean parseSelectiveScheduleEnabled;
+
+    @Value("${parse.post-graduate.schedule.full-time.enabled}")
+    private Boolean parsePostGraduateScheduleFullTimeEnabled;
+
+    @Value("${parse.post-graduate.schedule.part-time.enabled}")
+    private Boolean parsePostGraduateSchedulePartTimeEnabled;
 
     @Value("${mode}")
     private String parseMode;
@@ -50,6 +62,12 @@ public class MainJob {
             }
             if (parseSelectiveScheduleEnabled) {
                 selectiveScheduleCrawler.crawl();
+            }
+            if (parsePostGraduateScheduleFullTimeEnabled) {
+                postGraduateScheduleCrawlerFT.crawl();
+            }
+            if (parsePostGraduateSchedulePartTimeEnabled) {
+                postGraduateScheduleCrawlerPT.crawl();
             }
         } catch (SchedulePageParseException e) {
             logger.error(String.format(
