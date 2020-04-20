@@ -1,6 +1,6 @@
-package com.vladyka.lpnu.crawl.student.fulltime;
+package com.vladyka.lpnu.crawl.schedule.student.fulltime;
 
-import com.vladyka.lpnu.crawl.ScheduleCrawler;
+import com.vladyka.lpnu.crawl.schedule.student.ScheduleCrawler;
 import com.vladyka.lpnu.service.InstituteService;
 import com.vladyka.lpnu.service.impl.ParseServiceImpl;
 import com.vladyka.lpnu.tools.ParseUrlProvider;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class StudentInstitutesCrawlerFT implements ScheduleCrawler {
+public class StudentScheduleInstitutesCrawlerFT implements ScheduleCrawler {
 
     private Logger logger = LogManager.getLogger(getClass().getName());
 
@@ -28,7 +28,7 @@ public class StudentInstitutesCrawlerFT implements ScheduleCrawler {
     @Override
     public void crawl() {
         logger.info("[Student schedule, Full-time] - Started crawling institutes dropDown");
-        List<String> institutes = parseService.parseInstitutes(urlProvider.getBaseUrlFT());
+        List<String> institutes = parseService.parseInstitutes(urlProvider.getStudentScheduleBaseUrlFT());
         institutes.forEach(instituteService::createIfNotExists);
         logger.info("[Student schedule, Full-time] - Finished crawling institutes dropDown, total {} institutes", institutes.size());
     }

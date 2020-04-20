@@ -1,7 +1,8 @@
 package com.vladyka.lpnu.job;
 
-import com.vladyka.lpnu.crawl.student.fulltime.StudentScheduleCrawlerFT;
-import com.vladyka.lpnu.crawl.student.parttime.StudentScheduleCrawlerPT;
+import com.vladyka.lpnu.crawl.schedule.student.fulltime.StudentScheduleCrawlerFT;
+import com.vladyka.lpnu.crawl.schedule.student.parttime.StudentScheduleCrawlerPT;
+import com.vladyka.lpnu.crawl.schedule.student.selective.SelectiveScheduleCrawler;
 import com.vladyka.lpnu.exception.SchedulePageParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,12 +21,17 @@ public class MainJob {
     private StudentScheduleCrawlerFT crawlerFT;
     @Autowired
     private StudentScheduleCrawlerPT crawlerPT;
+    @Autowired
+    private SelectiveScheduleCrawler selectiveScheduleCrawler;
 
     @Value("${parse.student.schedule.full-time.enabled}")
-    private Boolean parseStudentSchedulFullTimeEnabled;
+    private Boolean parseStudentScheduleFullTimeEnabled;
 
     @Value("${parse.student.schedule.part-time.enabled}")
-    private Boolean parseStudentSchedulPartTimeEnabled;
+    private Boolean parseStudentSchedulePartTimeEnabled;
+
+    @Value("${parse.selective.schedule.enabled}")
+    private Boolean parseSelectiveScheduleEnabled;
 
     @Value("${mode}")
     private String parseMode;
@@ -36,11 +42,14 @@ public class MainJob {
         boolean failed = false;
         logger.info("[MainJob] Started crawling in {} mode", parseMode);
         try {
-            if (parseStudentSchedulFullTimeEnabled) {
+            if (parseStudentScheduleFullTimeEnabled) {
                 crawlerFT.crawl();
             }
-            if (parseStudentSchedulPartTimeEnabled) {
+            if (parseStudentSchedulePartTimeEnabled) {
                 crawlerPT.crawl();
+            }
+            if (parseSelectiveScheduleEnabled) {
+                selectiveScheduleCrawler.crawl();
             }
         } catch (SchedulePageParseException e) {
             logger.error(String.format(

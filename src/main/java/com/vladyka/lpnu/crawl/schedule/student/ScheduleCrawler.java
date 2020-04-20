@@ -1,4 +1,4 @@
-package com.vladyka.lpnu.crawl;
+package com.vladyka.lpnu.crawl.schedule.student;
 
 public interface ScheduleCrawler {
 

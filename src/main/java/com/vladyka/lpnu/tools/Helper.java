@@ -27,7 +27,7 @@ public class Helper {
     /**
      * Test your regex here: regex101.com
      * Teacher - could be empty
-     * <br> at the end also could not be present
+     * <br> tag at the end also could not be present
      * Фізичне виховання - не має викладача, аудиторії, корпусу
      */
     public static final Pattern PARA_DETAILS_PATTERN = Pattern.compile(
@@ -139,6 +139,18 @@ public class Helper {
                 total,
                 String.format("%.1f", remainingTimeMin),
                 instAbbr,
+                groupAbbr,
+                parseUrl);
+    }
+
+    public void printProgressLogs(String groupAbbr, Long startTime, Long endTime, int counter, int total, String parseUrl) {
+        double parseSpeed = (endTime - startTime) / 1000.0;
+        double remainingTimeMin = (total - counter) * parseSpeed / 60;
+        logger.info("[{}%] [{}/{}] [remaining ~ {} хв]: parsed and stored schedule for group {}, url = {}",
+                String.format("%.1f", counter / (double) total * 100),
+                counter,
+                total,
+                String.format("%.1f", remainingTimeMin),
                 groupAbbr,
                 parseUrl);
     }

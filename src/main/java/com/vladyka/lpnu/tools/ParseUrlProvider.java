@@ -16,33 +16,43 @@ public class ParseUrlProvider {
     @Value("${schedule-page.student.part-time}")
     private String baseUrlPT;
 
+    @Value("${schedule-page.selective}")
+    private String baseUrlSelective;
+
     // start part-time urls
-    public String getBaseUrlPT() {
+    public String getStudentScheduleBaseUrlPT() {
         return baseUrlPT;
     }
 
-    public String getGroupsUrlPT(String instAbbr) {
+    public String getStudentScheduleGroupsUrlPT(String instAbbr) {
         return String.format(baseUrlPT + "?institutecode_selective=%s", instAbbr);
     }
 
-    public String getGroupScheduleUrlPT(String instAbbr, String groupAbbr) {
+    public String getStudentScheduleGroupScheduleUrlPT(String instAbbr, String groupAbbr) {
         return String.format(baseUrlPT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
     }
     // end part-time urls
 
     // start full-time urls
-    public String getBaseUrlFT() {
+    public String getStudentScheduleBaseUrlFT() {
         return baseUrlFT;
     }
 
-    public String getGroupsUrlFT(String instAbbr) {
+    public String getStudentScheduleGroupsUrlFT(String instAbbr) {
         return String.format(baseUrlFT + "?institutecode_selective=%s", instAbbr);
     }
 
-    public String getGroupScheduleUrlFT(String instAbbr, String groupAbbr) {
+    public String getStudentScheduleGroupScheduleUrlFT(String instAbbr, String groupAbbr) {
         return String.format(baseUrlFT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
     }
     // end full-time urls
 
 
+    public String getSelectiveScheduleBaseUrl() {
+        return baseUrlSelective;
+    }
+
+    public String getSelectiveScheduleGroupScheduleUrl(String groupAbbr) {
+        return String.format(baseUrlSelective + "?edugrupabr_selective=%s", groupAbbr);
+    }
 }

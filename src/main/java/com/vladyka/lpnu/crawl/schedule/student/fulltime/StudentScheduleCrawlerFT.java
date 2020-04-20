@@ -1,6 +1,6 @@
-package com.vladyka.lpnu.crawl.student.fulltime;
+package com.vladyka.lpnu.crawl.schedule.student.fulltime;
 
-import com.vladyka.lpnu.crawl.ScheduleCrawler;
+import com.vladyka.lpnu.crawl.schedule.student.ScheduleCrawler;
 import com.vladyka.lpnu.dto.ParsedScheduleEntry;
 import com.vladyka.lpnu.exception.SchedulePageParseException;
 import com.vladyka.lpnu.model.Group;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.vladyka.lpnu.model.enums.GroupType.STUDENT;
+import static com.vladyka.lpnu.model.enums.GroupType.STUDENT_GROUP;
 import static com.vladyka.lpnu.model.enums.ParseMode.DEMO;
 import static com.vladyka.lpnu.model.enums.StudyForm.FULL_TIME;
 
@@ -44,9 +44,9 @@ public class StudentScheduleCrawlerFT implements ScheduleCrawler {
     @Autowired
     private ScheduleEntryServiceImpl scheduleEntryService;
     @Autowired
-    private StudentInstitutesCrawlerFT studentInstitutesCrawlerFT;
+    private StudentScheduleInstitutesCrawlerFT studentScheduleInstitutesCrawlerFT;
     @Autowired
-    private StudentGroupsCrawlerFT groupsCrawlerFT;
+    private StudentScheduleGroupsCrawlerFT groupsCrawlerFT;
     @Autowired
     private Helper helper;
 
@@ -55,14 +55,14 @@ public class StudentScheduleCrawlerFT implements ScheduleCrawler {
 
     @Override
     public void crawl() {
-        studentInstitutesCrawlerFT.crawl();
+        studentScheduleInstitutesCrawlerFT.crawl();
         groupsCrawlerFT.crawl();
         logger.info("[Student schedule, Full-time] - Started crawling schedules");
-        int total = groupService.findCount(STUDENT, FULL_TIME);
+        int total = groupService.findCount(STUDENT_GROUP, FULL_TIME);
 
         int counter = 0;
         for (Institute institute : instituteService.findAll()) {
-            for (Group group : groupService.findAll(institute.getId(), STUDENT,
+            for (Group group : groupService.findAll(institute.getId(), STUDENT_GROUP,
                     FULL_TIME)) {
                 crawlSinglePage(institute.getAbbr(), group.getAbbr(), total, counter);
                 counter++;
@@ -79,8 +79,8 @@ public class StudentScheduleCrawlerFT implements ScheduleCrawler {
 
     private void crawlSinglePage(String instAbbr, String groupAbbr, int total, int counter) {
         Long startTime = System.currentTimeMillis();
-        Group targetGroup = groupService.find(groupAbbr, instAbbr, FULL_TIME, STUDENT);
-        String urlToParse = urlProvider.getGroupScheduleUrlFT(instAbbr, groupAbbr);
+        Group targetGroup = groupService.find(groupAbbr, instAbbr, FULL_TIME, STUDENT_GROUP);
+        String urlToParse = urlProvider.getStudentScheduleGroupScheduleUrlFT(instAbbr, groupAbbr);
         try {
             List<ParsedScheduleEntry> parsedEntries = parseService.parseGroupSchedule(urlToParse);
             List<ScheduleEntry> resultEntries = new LinkedList<>();

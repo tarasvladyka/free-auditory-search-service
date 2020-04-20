@@ -27,8 +27,8 @@ public class GroupServiceImpl implements GroupService {
     private Helper helper;
 
     @Override
-    public List<Group> createAll(List<String> abbrs, String instituteAbbr, GroupType groupType,
-                                 StudyForm studyForm) {
+    public List<Group> createAllInInstitute(List<String> abbrs, String instituteAbbr, GroupType groupType,
+                                            StudyForm studyForm) {
         Institute institute = instituteService.getByAbbr(instituteAbbr);
 
         List<String> cleanAbbrs = helper.trimAll(abbrs);
@@ -45,8 +45,29 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public List<Group> createAll(List<String> abbrs, GroupType groupType,
+                                 StudyForm studyForm) {
+
+        List<String> cleanAbbrs = helper.trimAll(abbrs);
+        List<Group> groups = cleanAbbrs.stream()
+                .map(abbr -> new Group()
+                        .setAbbr(abbr)
+                        .setGroupType(groupType)
+                        .setStudyForm(studyForm))
+                .filter(
+                        group -> find(group.getAbbr(), studyForm, groupType) == null)
+                .collect(Collectors.toList());
+        return repository.saveAll(groups);
+    }
+
+    @Override
     public List<Group> findAll(Long instituteId, GroupType groupType, StudyForm studyForm) {
         return repository.findAllByInstituteIdAndGroupTypeAndStudyForm(instituteId, groupType, studyForm);
+    }
+
+    @Override
+    public List<Group> findAll(GroupType groupType, StudyForm studyForm) {
+        return repository.findAllByGroupTypeAndStudyForm(groupType, studyForm);
     }
 
     @Override
@@ -58,5 +79,10 @@ public class GroupServiceImpl implements GroupService {
     public Group find(String groupAbbr, String instAbbr, StudyForm studyForm, GroupType groupType) {
         Institute institute = instituteService.getByAbbr(instAbbr);
         return repository.findByAbbrAndInstituteIdAndStudyFormAndGroupType(groupAbbr, institute.getId(), studyForm, groupType);
+    }
+
+    @Override
+    public Group find(String groupAbbr, StudyForm studyForm, GroupType groupType) {
+        return repository.findByAbbrAndStudyFormAndGroupType(groupAbbr, studyForm, groupType);
     }
 }

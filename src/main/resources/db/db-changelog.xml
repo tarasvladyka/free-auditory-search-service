@@ -7,5 +7,6 @@
 
     <include file="db/1.sql"/>
     <include file="db/2.sql"/>
+    <include file="db/3.sql"/>
 
 </databaseChangeLog>

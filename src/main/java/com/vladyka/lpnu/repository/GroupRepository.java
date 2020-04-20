@@ -18,4 +18,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     Integer findCount(GroupType groupType, StudyForm studyForm);
 
     Group findByAbbrAndInstituteIdAndStudyFormAndGroupType(String groupAbbr, Long id, StudyForm studyForm, GroupType groupType);
+
+    Group findByAbbrAndStudyFormAndGroupType(String groupAbbr, StudyForm studyForm, GroupType groupType);
+
+    List<Group> findAllByGroupTypeAndStudyForm(GroupType groupType, StudyForm studyForm);
 }
