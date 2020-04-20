@@ -1,11 +1,10 @@
 package com.vladyka.lpnu.job;
 
-import com.vladyka.lpnu.crawl.schedule.postgraduate.fulltime.PostGraduateScheduleCrawlerFT;
-import com.vladyka.lpnu.crawl.schedule.postgraduate.parttime.PostGraduateScheduleCrawlerPT;
-import com.vladyka.lpnu.crawl.schedule.student.fulltime.StudentScheduleCrawlerFT;
-import com.vladyka.lpnu.crawl.schedule.student.parttime.StudentScheduleCrawlerPT;
-import com.vladyka.lpnu.crawl.schedule.student.selective.SelectiveScheduleCrawler;
+import com.vladyka.lpnu.crawl.CrawlOptions;
+import com.vladyka.lpnu.crawl.ScheduleCrawler;
 import com.vladyka.lpnu.exception.SchedulePageParseException;
+import com.vladyka.lpnu.model.enums.GroupType;
+import com.vladyka.lpnu.model.enums.StudyForm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,34 +19,21 @@ public class MainJob {
     private Logger logger = LogManager.getLogger(getClass().getName());
 
     @Autowired
-    private StudentScheduleCrawlerFT crawlerFT;
-    @Autowired
-    private StudentScheduleCrawlerPT crawlerPT;
-    @Autowired
-    private SelectiveScheduleCrawler selectiveScheduleCrawler;
-    @Autowired
-    private PostGraduateScheduleCrawlerFT postGraduateScheduleCrawlerFT;
-    @Autowired
-    private PostGraduateScheduleCrawlerPT postGraduateScheduleCrawlerPT;
+    private ScheduleCrawler scheduleCrawler;
 
     @Value("${parse.student.schedule.full-time.enabled}")
     private Boolean parseStudentScheduleFullTimeEnabled;
-
     @Value("${parse.student.schedule.part-time.enabled}")
     private Boolean parseStudentSchedulePartTimeEnabled;
-
     @Value("${parse.selective.schedule.enabled}")
     private Boolean parseSelectiveScheduleEnabled;
-
     @Value("${parse.post-graduate.schedule.full-time.enabled}")
     private Boolean parsePostGraduateScheduleFullTimeEnabled;
-
     @Value("${parse.post-graduate.schedule.part-time.enabled}")
     private Boolean parsePostGraduateSchedulePartTimeEnabled;
 
     @Value("${mode}")
     private String parseMode;
-
 
     @EventListener(ContextRefreshedEvent.class)
     public void start() {
@@ -55,19 +41,29 @@ public class MainJob {
         logger.info("[MainJob] Started crawling in {} mode", parseMode);
         try {
             if (parseStudentScheduleFullTimeEnabled) {
-                crawlerFT.crawl();
+                scheduleCrawler.crawl(new CrawlOptions()
+                        .setGroupType(GroupType.STUDENT_GROUP)
+                        .setStudyForm(StudyForm.FULL_TIME));
             }
             if (parseStudentSchedulePartTimeEnabled) {
-                crawlerPT.crawl();
+                scheduleCrawler.crawl(new CrawlOptions()
+                        .setGroupType(GroupType.STUDENT_GROUP)
+                        .setStudyForm(StudyForm.PART_TIME));
             }
             if (parseSelectiveScheduleEnabled) {
-                selectiveScheduleCrawler.crawl();
+                scheduleCrawler.crawl(new CrawlOptions()
+                        .setGroupType(GroupType.SELECTIVE_DISCIPLINES_GROUP)
+                        .setStudyForm(StudyForm.FULL_TIME));
             }
             if (parsePostGraduateScheduleFullTimeEnabled) {
-                postGraduateScheduleCrawlerFT.crawl();
+                scheduleCrawler.crawl(new CrawlOptions()
+                        .setGroupType(GroupType.POST_GRADUATE_GROUP)
+                        .setStudyForm(StudyForm.FULL_TIME));
             }
-            if (parsePostGraduateSchedulePartTimeEnabled) {
-                postGraduateScheduleCrawlerPT.crawl();
+            if (parsePostGraduateScheduleFullTimeEnabled) {
+                scheduleCrawler.crawl(new CrawlOptions()
+                        .setGroupType(GroupType.POST_GRADUATE_GROUP)
+                        .setStudyForm(StudyForm.PART_TIME));
             }
         } catch (SchedulePageParseException e) {
             logger.error(String.format(

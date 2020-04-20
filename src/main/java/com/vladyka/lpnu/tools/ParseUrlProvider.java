@@ -1,5 +1,7 @@
 package com.vladyka.lpnu.tools;
 
+import com.vladyka.lpnu.model.enums.GroupType;
+import com.vladyka.lpnu.model.enums.StudyForm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,64 +14,40 @@ public class ParseUrlProvider {
 
     @Value("${schedule-page.student.full-time}")
     private String baseUrlFT;
-
     @Value("${schedule-page.student.part-time}")
     private String baseUrlPT;
-
     @Value("${schedule-page.selective}")
     private String baseUrlSelective;
-
     @Value("${schedule-page.post-graduate.full-time}")
     private String baseUrlPostGraduateFT;
-
     @Value("${schedule-page.post-graduate.part-time}")
     private String baseUrlPostGraduatePT;
 
-    public String getStudentBaseUrlPT() {
-        return baseUrlPT;
+    public String getBaseUrl(GroupType groupType, StudyForm studyForm) {
+        if (GroupType.STUDENT_GROUP.equals(groupType) && StudyForm.FULL_TIME.equals(studyForm)) {
+            return baseUrlFT;
+        } else if (GroupType.STUDENT_GROUP.equals(groupType) && StudyForm.PART_TIME.equals(studyForm)) {
+            return baseUrlPT;
+        } else if (GroupType.POST_GRADUATE_GROUP.equals(groupType) && StudyForm.PART_TIME.equals(studyForm)) {
+            return baseUrlPostGraduatePT;
+        } else if (GroupType.POST_GRADUATE_GROUP.equals(groupType) && StudyForm.FULL_TIME.equals(studyForm)) {
+            return baseUrlPostGraduateFT;
+        } else if (GroupType.SELECTIVE_DISCIPLINES_GROUP.equals(groupType) && StudyForm.FULL_TIME.equals(studyForm)) {
+            return baseUrlSelective;
+        } else {
+            throw new IllegalArgumentException("Specified group type and study form is not supported");
+        }
     }
 
-    public String getStudentGroupsUrlPT(String instAbbr) {
-        return String.format(baseUrlPT + "?institutecode_selective=%s", instAbbr);
+    public String getGroupsUrl(GroupType groupType, StudyForm studyForm, String instAbbr) {
+        if (GroupType.STUDENT_GROUP.equals(groupType)) {
+            return String.format(getBaseUrl(groupType, studyForm) + "?institutecode_selective=%s", instAbbr);
+        } else {
+            throw new IllegalArgumentException("Groups url could not build for these params");
+        }
     }
 
-    public String getStudentGroupScheduleUrlPT(String instAbbr, String groupAbbr) {
-        return String.format(baseUrlPT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
-    }
-
-    public String getStudentBaseUrlFT() {
-        return baseUrlFT;
-    }
-
-    public String getStudentGroupsUrlFT(String instAbbr) {
-        return String.format(baseUrlFT + "?institutecode_selective=%s", instAbbr);
-    }
-
-    public String getStudentGroupScheduleUrlFT(String instAbbr, String groupAbbr) {
-        return String.format(baseUrlFT + "?institutecode_selective=%s&edugrupabr_selective=%s", instAbbr, groupAbbr);
-    }
-
-    public String getSelectiveScheduleBaseUrl() {
-        return baseUrlSelective;
-    }
-
-    public String getSelectiveGroupScheduleUrl(String groupAbbr) {
-        return String.format(baseUrlSelective + "?edugrupabr_selective=%s", groupAbbr);
-    }
-
-    public String getPostGraduateBaseUrlFT() {
-        return baseUrlPostGraduateFT;
-    }
-
-    public String getPostGraduateGroupScheduleUrlFT(String groupAbbr) {
-        return String.format(baseUrlPostGraduateFT + "?edugrupabr_selective=%s", groupAbbr);
-    }
-
-    public String getPostGraduateBaseUrlPT() {
-        return baseUrlPostGraduatePT;
-    }
-
-    public String getPostGraduateGroupScheduleUrlPT(String groupAbbr) {
-        return String.format(baseUrlPostGraduatePT + "?edugrupabr_selective=%s", groupAbbr);
+    public String getGroupScheduleUrl(GroupType groupType, StudyForm studyForm, String groupAbbr) {
+        return String.format(getBaseUrl(groupType, studyForm) + "?institutecode_selective=All&edugrupabr_selective=%s", groupAbbr);
     }
 }
