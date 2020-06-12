@@ -30,10 +30,9 @@ public class ScheduleEntryBuilder {
     private Helper helper;
 
     /**
-     * May produce multiple schedule entries,
+     * Method may return multiple schedule entries,
      * since schedule might include 2 auditoriums for the same group
      * (for ex. [ел.3лаб Гол. н.к., опт.4лаб Гол. н.к.,  Лабораторна])
-     * so we have to produce 2 ScheduleEntries
      */
     public List<ScheduleEntry> buildRegularOne(ParsedScheduleEntry parsed, Group group) {
         List<ScheduleEntry> entries = new LinkedList<>();
@@ -61,10 +60,9 @@ public class ScheduleEntryBuilder {
     }
 
     /**
-     * May produce multiple schedule entries,
+     * Method may return multiple schedule entries,
      * since schedule might include 2 auditoriums for the same group
      * (for ex. [ел.3лаб Гол. н.к., опт.4лаб Гол. н.к.,  Лабораторна])
-     * so we have to produce 2 ScheduleEntries
      */
     public List<DateBasedScheduleEntry> buildDateBased(ParsedScheduleEntry parsed, Group group) {
         List<DateBasedScheduleEntry> entries = new LinkedList<>();

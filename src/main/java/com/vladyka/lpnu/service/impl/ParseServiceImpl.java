@@ -7,7 +7,6 @@ import com.vladyka.lpnu.service.AuditoryServiceImpl;
 import com.vladyka.lpnu.service.CampusService;
 import com.vladyka.lpnu.service.ParseService;
 import com.vladyka.lpnu.tools.Helper;
-import com.vladyka.lpnu.tools.ParseUrlProvider;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -28,9 +27,6 @@ public class ParseServiceImpl implements ParseService {
 
     private static final String INSTITUTES_SELECTOR = "#edit-institutecode-selective option";
     private static final String GROUPS_SELECTOR = "#edit-edugrupabr-selective option";
-
-    @Autowired
-    private ParseUrlProvider urlProvider;
 
     @Autowired
     private AuditoryServiceImpl auditoryService;

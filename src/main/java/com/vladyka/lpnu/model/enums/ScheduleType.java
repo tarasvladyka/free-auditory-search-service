@@ -1,13 +1,12 @@
 package com.vladyka.lpnu.model.enums;
 
-public enum StudyForm {
-
-  FULL_TIME("full-time"),
-  PART_TIME("part-time");
+public enum ScheduleType {
+  LESSON_SCHEDULE("Lesson schedule"),
+  EXAM_SCHEDULE("Exam schedule");
 
   private String friendlyName;
 
-  StudyForm(String friendlyName) {
+  ScheduleType(String friendlyName) {
     this.friendlyName = friendlyName;
   }
 
