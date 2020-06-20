@@ -1,6 +1,6 @@
 package com.vladyka.lpnu.job;
 
-import com.vladyka.lpnu.crawl.Crawler;
+import com.vladyka.lpnu.crawl.AbstractCrawler;
 import com.vladyka.lpnu.exception.SchedulePageParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +21,7 @@ public class MainJob {
   protected String parseMode;
 
   @Autowired
-  private List<Crawler> crawlers;
+  private List<AbstractCrawler> crawlers;
 
   @EventListener(ContextRefreshedEvent.class)
   public void run() {
@@ -31,7 +31,7 @@ public class MainJob {
 
     boolean overallSuccess = true;
 
-    for (Crawler crawler : crawlers) {
+    for (AbstractCrawler crawler : crawlers) {
       logger.info(crawler.getLogPrefix() + " - Started", parseMode);
       boolean success = true;
 

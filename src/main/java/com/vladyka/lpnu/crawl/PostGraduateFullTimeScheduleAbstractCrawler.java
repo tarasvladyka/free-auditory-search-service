@@ -10,9 +10,9 @@ import static com.vladyka.lpnu.model.enums.StudyForm.FULL_TIME;
 
 @Component
 @ConditionalOnProperty(value = "parse.post-graduate.schedule.full-time.enabled", havingValue = "true")
-public class PostGraduateFullTimeScheduleCrawler extends Crawler {
+public class PostGraduateFullTimeScheduleAbstractCrawler extends AbstractCrawler {
 
-  public PostGraduateFullTimeScheduleCrawler(@Value("${schedule-page.post-graduate.full-time}") String baseUrl) {
+  public PostGraduateFullTimeScheduleAbstractCrawler(@Value("${schedule-page.post-graduate.full-time}") String baseUrl) {
     super(baseUrl, POST_GRADUATE_GROUP, FULL_TIME, LESSON_SCHEDULE);
   }
 

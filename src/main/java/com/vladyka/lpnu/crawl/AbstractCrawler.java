@@ -26,7 +26,7 @@ import java.util.List;
 
 import static com.vladyka.lpnu.model.enums.ParseMode.DEMO;
 
-public abstract class Crawler {
+public abstract class AbstractCrawler {
 
   protected Logger logger = LogManager.getLogger(getClass().getName());
 
@@ -52,7 +52,7 @@ public abstract class Crawler {
   protected String logPrefix;
   protected String baseUrl;
 
-  protected Crawler(String baseUrl, GroupType groupType, StudyForm studyForm, ScheduleType scheduleType) {
+  protected AbstractCrawler(String baseUrl, GroupType groupType, StudyForm studyForm, ScheduleType scheduleType) {
     this.groupType = groupType;
     this.studyForm = studyForm;
     this.baseUrl = baseUrl;
