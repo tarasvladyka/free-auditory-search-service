@@ -10,9 +10,9 @@ import static com.vladyka.lpnu.model.enums.StudyForm.PART_TIME;
 
 @Component
 @ConditionalOnProperty(value = "parse.post-graduate.schedule.part-time.enabled", havingValue = "true")
-public class PostGraduatePartTimeScheduleAbstractCrawler extends AbstractCrawler {
+public class PostGraduatePartTimeScheduleCrawler extends AbstractCrawler {
 
-  public PostGraduatePartTimeScheduleAbstractCrawler(@Value("${schedule-page.post-graduate.part-time}") String baseUrl) {
+  public PostGraduatePartTimeScheduleCrawler(@Value("${schedule-page.post-graduate.part-time}") String baseUrl) {
     super(baseUrl, POST_GRADUATE_GROUP, PART_TIME, LESSON_SCHEDULE);
   }
 
