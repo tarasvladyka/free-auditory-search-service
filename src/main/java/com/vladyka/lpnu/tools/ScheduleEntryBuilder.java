@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.vladyka.lpnu.tools.Helper.CAMPUS_AUDITORY_PATTERN;
+import static com.vladyka.lpnu.tools.ParseHelper.CAMPUS_AUDITORY_PATTERN;
 
 @Component
 public class ScheduleEntryBuilder {
@@ -27,7 +27,7 @@ public class ScheduleEntryBuilder {
     private AuditoryService auditoryService;
 
     @Autowired
-    private Helper helper;
+    private ParseHelper helper;
 
     /**
      * Method may return multiple schedule entries,

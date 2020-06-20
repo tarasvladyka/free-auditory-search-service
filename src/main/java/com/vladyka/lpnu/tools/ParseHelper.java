@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import static org.apache.commons.lang3.StringUtils.trim;
 
 @Component
-public class Helper {
+public class ParseHelper {
 
     private Logger logger = LogManager.getLogger(getClass().getName());
 

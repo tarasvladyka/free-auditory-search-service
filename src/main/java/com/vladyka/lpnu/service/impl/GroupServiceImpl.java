@@ -7,7 +7,7 @@ import com.vladyka.lpnu.model.enums.StudyForm;
 import com.vladyka.lpnu.repository.GroupRepository;
 import com.vladyka.lpnu.service.GroupService;
 import com.vladyka.lpnu.service.InstituteService;
-import com.vladyka.lpnu.tools.Helper;
+import com.vladyka.lpnu.tools.ParseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class GroupServiceImpl implements GroupService {
     private InstituteService instituteService;
 
     @Autowired
-    private Helper helper;
+    private ParseHelper helper;
 
     @Override
     public List<Group> createAllInInstitute(List<String> abbrs, String instituteAbbr, GroupType groupType,

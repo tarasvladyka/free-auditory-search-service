@@ -3,7 +3,7 @@ package com.vladyka.lpnu.service.impl;
 import com.vladyka.lpnu.model.Institute;
 import com.vladyka.lpnu.repository.InstituteRepository;
 import com.vladyka.lpnu.service.InstituteService;
-import com.vladyka.lpnu.tools.Helper;
+import com.vladyka.lpnu.tools.ParseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class InstituteServiceImpl implements InstituteService {
     private InstituteRepository repository;
 
     @Autowired
-    private Helper helper;
+    private ParseHelper helper;
 
     @Override
     public Institute getByAbbr(String abbr) {

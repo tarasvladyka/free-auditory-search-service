@@ -13,7 +13,7 @@ import com.vladyka.lpnu.service.GroupService;
 import com.vladyka.lpnu.service.InstituteService;
 import com.vladyka.lpnu.service.impl.ParseServiceImpl;
 import com.vladyka.lpnu.service.impl.ScheduleEntryServiceImpl;
-import com.vladyka.lpnu.tools.Helper;
+import com.vladyka.lpnu.tools.ParseHelper;
 import com.vladyka.lpnu.tools.ScheduleEntryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +41,7 @@ public abstract class Crawler {
   @Autowired
   private GroupService groupService;
   @Autowired
-  private Helper helper;
+  private ParseHelper helper;
 
   @Value("${mode}")
   protected String parseMode;

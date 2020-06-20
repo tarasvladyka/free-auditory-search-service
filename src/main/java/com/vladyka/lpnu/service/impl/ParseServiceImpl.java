@@ -6,7 +6,7 @@ import com.vladyka.lpnu.exception.SchedulePageParseException;
 import com.vladyka.lpnu.service.AuditoryServiceImpl;
 import com.vladyka.lpnu.service.CampusService;
 import com.vladyka.lpnu.service.ParseService;
-import com.vladyka.lpnu.tools.Helper;
+import com.vladyka.lpnu.tools.ParseHelper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.vladyka.lpnu.tools.Helper.PARA_DETAILS_PATTERN;
+import static com.vladyka.lpnu.tools.ParseHelper.PARA_DETAILS_PATTERN;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Service
@@ -32,7 +32,7 @@ public class ParseServiceImpl implements ParseService {
     private AuditoryServiceImpl auditoryService;
 
     @Autowired
-    private Helper helper;
+    private ParseHelper helper;
 
     @Autowired
     private CampusService campusService;
